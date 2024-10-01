@@ -1,23 +1,3 @@
-BST_NODE *minimum(BST_NODE *node) {
-    // Finds the minimum node in a subtree (i.e., leftmost node)
-    if (node == NULL) return NULL;
-
-    while (node->left != NULL) {
-        node = node->left; // Move to the leftmost node
-    }
-    return node; // Return the node with the minimum value
-}
-
-BST_NODE *maximum(BST_NODE *node) {
-    // Finds the maximum node in a subtree (i.e., rightmost node)
-    if (node == NULL) return NULL;
-
-    while (node->right != NULL) {
-        node = node->right; // Move to the rightmost node
-    }
-    return node; // Return the node with the maximum value
-}
-
 int delete(BST *B, int key) {
 
     // If the tree is empty, print an error and return
@@ -88,28 +68,28 @@ int delete(BST *B, int key) {
         free(root); // Free the memory of the deleted node
     }
 
-    // Case 3: The node has two children
+    // Case 3: The node has two children (use predecessor)
     else {
-        BST_NODE *succ = root->right;
-        BST_NODE *parent_succ = root;
+        BST_NODE *pred = root->left;
+        BST_NODE *parent_pred = root;
 
-        // Find the successor, which is the minimum node in the right subtree
-        while (succ->left != NULL) {
-            parent_succ = succ;
-            succ = succ->left; // Keep moving left until the successor is found
+        // Find the predecessor, which is the maximum node in the left subtree
+        while (pred->right != NULL) {
+            parent_pred = pred;
+            pred = pred->right; // Keep moving right until the predecessor is found
         }
 
-        // Replace the key of the node to be deleted with the successor's key
-        root->key = succ->key;
+        // Replace the key of the node to be deleted with the predecessor's key
+        root->key = pred->key;
 
-        // Fix the parent's child pointer to bypass the deleted successor
-        if (parent_succ->left == succ) {
-            parent_succ->left = succ->right; // Successor's right child replaces it in the tree
+        // Fix the parent's child pointer to bypass the deleted predecessor
+        if (parent_pred->right == pred) {
+            parent_pred->right = pred->left; // Predecessor's left child replaces it in the tree
         } else {
-            parent_succ->right = succ->right; // Successor was a direct child of the root
+            parent_pred->left = pred->left; // Predecessor was a direct child of root
         }
 
-        free(succ); // Free the memory of the successor node
+        free(pred); // Free the memory of the predecessor node
     }
     
     // Decrease the size of the tree after deletion
